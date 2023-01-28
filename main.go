@@ -27,12 +27,14 @@ func main() {
 	widget.Layout().AddWidget(topBar)
 
 	labelKey := widgets.NewQLabel2("Key", nil, 0)
+	labelKey.SetAlignment(core.Qt__AlignRight | core.Qt__AlignCenter)
 	topBar.Layout().AddWidget(labelKey)
 	comboKey := widgets.NewQComboBox(nil)
 	comboKey.AddItems([]string{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"})
 	topBar.Layout().AddWidget(comboKey)
 
 	labelMode := widgets.NewQLabel2("Mode", nil, 0)
+	labelMode.SetAlignment(core.Qt__AlignRight | core.Qt__AlignCenter)
 	topBar.Layout().AddWidget(labelMode)
 	comboMode := widgets.NewQComboBox(nil)
 	comboMode.AddItems([]string{"Ionian (Major)", "Dorian", "Phrygian", "Lydian", "Mixolydian", "Aeolian (Minor)", "Locrian"})
