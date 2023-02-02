@@ -18,15 +18,18 @@ func main() {
 	window.SetCentralWidget(widget)
 
 	topBar := widgets.NewQWidget(nil, 0)
-	topBar.SetLayout(widgets.NewQHBoxLayout())
+	hBox := widgets.NewQHBoxLayout()
+	topBar.SetLayout(hBox)
 	widget.Layout().AddWidget(topBar)
 
+	hBox.AddStretch(0)
 	labelKey := widgets.NewQLabel2("Key", nil, 0)
 	labelKey.SetAlignment(core.Qt__AlignRight | core.Qt__AlignCenter)
 	topBar.Layout().AddWidget(labelKey)
 	comboKey := widgets.NewQComboBox(nil)
 	comboKey.AddItems([]string{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"})
 	topBar.Layout().AddWidget(comboKey)
+	hBox.AddStretch(0)
 
 	labelMode := widgets.NewQLabel2("Mode", nil, 0)
 	labelMode.SetAlignment(core.Qt__AlignRight | core.Qt__AlignCenter)
@@ -34,8 +37,7 @@ func main() {
 	comboMode := widgets.NewQComboBox(nil)
 	comboMode.AddItems([]string{"Ionian (Major)", "Dorian", "Phrygian", "Lydian", "Mixolydian", "Aeolian (Minor)", "Locrian"})
 	topBar.Layout().AddWidget(comboMode)
-
-	// CurrentScale := music.NewScale("C", 0)
+	hBox.AddStretch(0)
 
 	fretboard := NewFretboard()
 	widget.Layout().AddWidget(fretboard)
