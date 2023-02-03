@@ -1,6 +1,10 @@
 # FretboardVisualizer
 Simple GUI application to visualize scale degree positions across the fretboard of a guitar. Written in Go
 
+# Screenshots
+![C Major](./screenshots/c-major.png)
+![F# Minor](./screenshots/fsharp-minor.png)
+
 # TODO
  - Get Qt going
  - Music scale calculation
