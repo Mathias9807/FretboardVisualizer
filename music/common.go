@@ -5,8 +5,17 @@ import (
 	"math"
 )
 
-var NotesMap = map[string]int{
-	"C": 0, "C#": 1, "D": 2, "D#": 3, "E": 4, "F": 5, "F#": 6, "G": 7, "G#": 8, "A": 9, "A#": 10, "B": 11,
+var Notes = []string{
+	"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B",
+}
+
+func GetNoteInt(strNote string) (int, bool) {
+	for i, note := range Notes {
+		if note == strNote {
+			return i, true
+		}
+	}
+	return -1, false
 }
 
 // Array of the distances between notes of a major scale, to find the interval of a given scale degree,
@@ -23,7 +32,7 @@ var StringTunings = [6]int{
 
 // Given a certain mode of a certain key, produce an ordered list of the scale degrees where 0 is C and 11 is B. The first element will be the root note
 func GetScaleDegrees(key string, mode int) [7]int {
-	keyNote, exists := NotesMap[key]
+	keyNote, exists := GetNoteInt(key)
 	if !exists {
 		panic(fmt.Sprintf("keyNote %s does not exist in list of notes", keyNote))
 	}

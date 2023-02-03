@@ -17,13 +17,16 @@ type Fretboard struct {
 	nFrets    int
 	strMargin int
 	fretBLen  int
+	notePen   *gui.QPen
+	noteBrush *gui.QBrush
+	noteFont  *gui.QFont
 }
 
 func NewFretboard() *Fretboard {
 	f := &Fretboard{
 		QWidget: *widgets.NewQWidget(nil, 0),
 	}
-	f.margin = 10
+	f.margin = 12
 	f.nutM = 8
 	f.nStrings = 6
 	f.nFrets = 24
@@ -33,6 +36,14 @@ func NewFretboard() *Fretboard {
 	contentH := (f.nStrings - 1) * f.strMargin
 	f.SetFixedSize2(contentW+2*f.margin, contentH+2*f.margin)
 	f.ConnectPaintEvent(f.draw)
+
+	f.notePen = gui.NewQPen()
+	f.notePen.SetWidth(2)
+	f.noteBrush = gui.NewQBrush3(gui.NewQColor2(core.Qt__white), core.Qt__SolidPattern)
+	f.noteFont = gui.NewQFont()
+	f.noteFont.SetStyleHint(gui.QFont__Monospace, gui.QFont__StyleStrategy(gui.QFont__AbsoluteSpacing))
+	f.noteFont.SetBold(true)
+	f.noteFont.SetPointSize(10)
 	return f
 }
 
@@ -90,7 +101,26 @@ func (f *Fretboard) draw(paintEvent *gui.QPaintEvent) {
 		}
 	}
 
-	f.drawNote("C", painter)
+	// Switch to settings for note drawing
+	painter.SetPen(f.notePen)
+	painter.SetBrush(f.noteBrush)
+	painter.SetFont(f.noteFont)
+
+	// Draw scale
+	scale := music.GetScaleDegrees(music.Notes[SelectedKey], SelectedMode)
+	for degree := 0; degree < 7; degree++ {
+		if degree+1 == 1 {
+			painter.Pen().SetColor(gui.NewQColor2(core.Qt__blue))
+		} else if degree+1 == 3 {
+			painter.Pen().SetColor(gui.NewQColor2(core.Qt__darkRed))
+		} else if degree+1 == 5 {
+			painter.Pen().SetColor(gui.NewQColor2(core.Qt__darkCyan))
+		} else {
+			painter.Pen().SetColor(gui.NewQColor2(core.Qt__gray))
+		}
+
+		f.drawNote(music.Notes[scale[degree]], painter)
+	}
 
 	painter.End()
 }
@@ -105,7 +135,8 @@ func (f *Fretboard) strDistOfFret(fret float64, width int) float64 {
 
 func (f *Fretboard) drawNote(note string, painter *gui.QPainter) {
 	for str := 0; str < 6; str++ {
-		for _, fret := range music.GetFretsOfNote(music.NotesMap[note], str, 24) {
+		noteInt, _ := music.GetNoteInt(note)
+		for _, fret := range music.GetFretsOfNote(noteInt, str, 24) {
 			f.drawNoteOnFret(note, str, fret, painter)
 		}
 	}
@@ -114,24 +145,19 @@ func (f *Fretboard) drawNote(note string, painter *gui.QPainter) {
 func (f *Fretboard) drawNoteOnFret(note string, str int, fret int, painter *gui.QPainter) {
 	x := f.margin + f.nutM + int((f.strDistOfFret(float64(fret-1), f.fretBLen)+f.strDistOfFret(float64(fret), f.fretBLen))/2)
 	y := f.margin + str*f.strMargin
-	noteSize := 20
+	noteSize := 15
 
 	if fret == 0 {
 		x = f.margin + f.nutM/2
 	}
 
-	painter.Pen().SetWidth(2)
-	painter.Brush().SetStyle(core.Qt__SolidPattern)
-	painter.Brush().SetColor2(core.Qt__white)
-	painter.Font().SetStyleHint(gui.QFont__Monospace, gui.QFont__StyleStrategy(gui.QFont__AbsoluteSpacing))
-	painter.Font().SetBold(true)
-	painter.Font().SetPointSize(12)
 	painter.DrawEllipse3(x-noteSize/2, y-noteSize/2, noteSize, noteSize)
-	textRect := core.NewQRect4(x-noteSize/2-2, y-noteSize/2, noteSize+2, noteSize+4)
+	textRect := core.NewQRect4(x-noteSize/2-1, y-noteSize/2-1, noteSize+2, noteSize+4)
 	painter.DrawText4(textRect, int(core.Qt__AlignCenter), string(note[0]), nil)
 	if len(note) > 1 {
-		painter.Font().SetPointSize(10)
+		prevSize := painter.Font().PointSize()
+		painter.Font().SetPointSize(7)
 		painter.DrawText4(textRect, int(core.Qt__AlignRight|core.Qt__AlignTop), string("#"), nil)
-		painter.Font().SetBold(false)
+		painter.Font().SetPointSize(prevSize)
 	}
 }

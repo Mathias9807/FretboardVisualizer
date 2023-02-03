@@ -7,6 +7,9 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
+var SelectedKey = 0
+var SelectedMode = 0
+
 func main() {
 	app := widgets.NewQApplication(len(os.Args), os.Args)
 
@@ -28,6 +31,11 @@ func main() {
 	topBar.Layout().AddWidget(labelKey)
 	comboKey := widgets.NewQComboBox(nil)
 	comboKey.AddItems([]string{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"})
+	comboKey.ConnectCurrentIndexChanged(func(index int) {
+		SelectedKey = index
+		window.Update()
+	})
+
 	topBar.Layout().AddWidget(comboKey)
 	hBox.AddStretch(0)
 
@@ -36,6 +44,10 @@ func main() {
 	topBar.Layout().AddWidget(labelMode)
 	comboMode := widgets.NewQComboBox(nil)
 	comboMode.AddItems([]string{"Ionian (Major)", "Dorian", "Phrygian", "Lydian", "Mixolydian", "Aeolian (Minor)", "Locrian"})
+	comboMode.ConnectCurrentIndexChanged(func(index int) {
+		SelectedMode = index
+		window.Update()
+	})
 	topBar.Layout().AddWidget(comboMode)
 	hBox.AddStretch(0)
 
