@@ -5,11 +5,6 @@ Simple GUI application to visualize scale degree positions across the fretboard 
 ![C Major](./screenshots/c-major.png)
 ![F# Minor](./screenshots/fsharp-minor.png)
 
-# TODO
- - Get Qt going
- - Music scale calculation
- - Fretboard visualisation graphics
-
 # Scales calculation
 For a given scale and in a given key the scale degrees need to be extracted. Each scale can be represented as the intervals of all notes up to (not including) the octave. Those intervals need to be applied as offsets to the key to produce the note values in the scale. To apply the scale to a guitar fretboard those notes need to be "offset" by the note of the open string for each string.
 
